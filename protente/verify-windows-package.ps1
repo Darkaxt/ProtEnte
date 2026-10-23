@@ -95,6 +95,7 @@ public static class ProtEnteSmokeWindow {
             uint pid;
             GetWindowThreadProcessId(window, out pid);
             if (window == IntPtr.Zero || pid != process.Id || !IsWindowVisible(window)) return;
+            Console.WriteLine("Observed the test process's visible ProtEnte window; requesting normal close.");
             // WM_CLOSE invokes the application's actual Windows quit path.
             if (PostMessage(window, 0x0010, UIntPtr.Zero, IntPtr.Zero)) requested = true;
             else failure = "Could not request normal window close.";
@@ -109,6 +110,7 @@ public static class ProtEnteSmokeWindow {
             process.EnableRaisingEvents = true;
             inspect(); // Also handle a window shown before the hook was installed.
             if (!requested && !process.HasExited) {
+                Console.WriteLine("Waiting for the test process's native window-show event.");
                 pumping = true;
                 int result;
                 while ((result = GetMessage(out message, IntPtr.Zero, 0, 0)) > 0) {
@@ -127,13 +129,18 @@ public static class ProtEnteSmokeWindow {
     }
 }
 '@
-    $process = Start-Process -FilePath $installedExe -WindowStyle Hidden -PassThru
+    # This is the interactive application under test on a disposable CI desktop.
+    # A hidden startup show-state conflicts with waiting for its first show event.
+    Write-Host 'Installer and protocol checks passed; launching the test application.'
+    $process = Start-Process -FilePath $installedExe -PassThru
     try {
         if (-not $process.WaitForInputIdle()) { throw 'Application did not reach its native input loop.' }
+        Write-Host 'The test application reached its native input loop.'
         [ProtEnteSmokeWindow]::WaitForShownWindowAndClose($process)
         $verification.nativeWindowStartupVerified = $true
         $process.WaitForExit()
         if ($process.ExitCode -ne 0) { throw "Application exited abnormally: $($process.ExitCode)" }
+        Write-Host 'The test application exited normally.'
     } finally { $process.Dispose() }
     $currentUpstream = if (Test-Path $upstreamProtocol) { (Get-Item $upstreamProtocol).GetValue('') } else { $null }
     if ($currentUpstream -ne $previousUpstream) { throw 'Upstream Ente URL handler changed.' }

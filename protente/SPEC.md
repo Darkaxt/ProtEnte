@@ -57,6 +57,13 @@ the process exited abnormally. The test now waits for the native show event and
 sends WM_CLOSE through the actual application close path; application behavior
 is unchanged. This corrected smoke check is the current internal acceptance
 blocker, resolved only by a passing real runner check, before delivery can start.
+Run `40039971760` passed compilation/packaging but revealed a test setup conflict:
+the application was launched hidden while the new test awaited a visible window.
+The run was explicitly cancelled for that conflict. The CI-only interactive app
+launch now uses normal visibility. Diagnostic milestones identify input readiness,
+window visibility and normal exit. The manual workflow can recheck an immutable
+package only after proving its application/build inputs match the checkout; this
+avoids recompiling unchanged application code when correcting verifier behavior.
 Repository, source ancestry, PowerShell parsing, Dart formatting and static
 namespace/workflow checks have been inspected.
 R4 scope revision, explicitly authorized on 2026-10-24: user answered “Yes,

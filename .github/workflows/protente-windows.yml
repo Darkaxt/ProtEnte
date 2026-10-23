@@ -2,9 +2,15 @@ name: ProtEnte Windows packaging
 
 on:
   workflow_dispatch:
+    inputs:
+      artifact_run_id:
+        description: 'Optional: verify an existing package run with unchanged application/build inputs'
+        required: false
+        type: string
 
 permissions:
   contents: read
+  actions: read
 
 concurrency:
   group: protente-windows
@@ -26,14 +32,32 @@ jobs:
             protente
             .github/actions/setup-flutter
       - name: Install pinned Flutter
+        if: inputs.artifact_run_id == ''
         uses: ./.github/actions/setup-flutter
       - name: Build, check and package
+        if: inputs.artifact_run_id == ''
         id: package
         run: ./protente/build-windows.ps1 -OutputDirectory "$env:RUNNER_TEMP/ProtEnte-release"
+      - name: Retrieve an existing package with identical application and build inputs
+        if: inputs.artifact_run_id != ''
+        id: download
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_RUN_ID: ${{ inputs.artifact_run_id }}
+        run: |
+          if ($env:ARTIFACT_RUN_ID -notmatch '^\d+$') { throw 'Use a numeric workflow run ID.' }
+          gh run download $env:ARTIFACT_RUN_ID --repo $env:GITHUB_REPOSITORY --name ProtEnte-windows-x64 --dir "$env:RUNNER_TEMP/ProtEnte-release"
+          if ($LASTEXITCODE -ne 0) { throw 'Package retrieval failed.' }
+          $manifest = Get-Content -Raw "$env:RUNNER_TEMP/ProtEnte-release/release-manifest.json" | ConvertFrom-Json
+          if ($manifest.sourceRevision -notmatch '^[0-9a-f]{40}$' -or $manifest.repository -ne "https://github.com/$env:GITHUB_REPOSITORY") { throw 'Invalid package source identity.' }
+          git fetch --no-tags --depth=1 origin $manifest.sourceRevision
+          if ($LASTEXITCODE -ne 0) { throw 'Cannot resolve the package source revision.' }
+          git diff --exit-code $manifest.sourceRevision HEAD -- mobile .github/actions/setup-flutter protente/windows.json protente/build-windows.ps1 protente/build-installer.ps1 protente/BASELINE-NOTICE.txt LICENSE
+          if ($LASTEXITCODE -ne 0) { throw 'Application or build inputs changed; perform a new build.' }
       - name: Verify installer and application startup on the disposable runner
         run: ./protente/verify-windows-package.ps1 -ArtifactDirectory "$env:RUNNER_TEMP/ProtEnte-release" -SmokeTest
       - name: Upload packages and verification evidence
-        if: always() && steps.package.outcome == 'success'
+        if: always() && (steps.package.outcome == 'success' || steps.download.outcome == 'success')
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: ProtEnte-windows-x64

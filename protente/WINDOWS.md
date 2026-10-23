@@ -11,6 +11,12 @@ and run it manually. It uses Windows Server 2022 / Visual Studio 2022, the
 upstream SHA-256-verified Flutter 3.47.2 archive, and `mobile/pubspec.lock`.
 Only this fork-specific workflow is active in the fork's default branch.
 It requires no Ente signing, store, cloud deployment or Sentry secrets.
+Leave `artifact_run_id` empty for a complete build. When changing only verification
+or documentation, the same workflow can verify an existing run's immutable package.
+It refuses reuse if application source, dependencies, SDK setup, license, package
+notice, metadata or build/installer scripts differ from that package's source.
+The package manifest and release tag retain the original build source revision;
+the verification run separately identifies the current verifier revision.
 
 Runtime prerequisites follow upstream: Windows 10 or later with x64 app support
 and the Microsoft Visual C++ x64 runtime for the VS2022 toolchain. The installer
