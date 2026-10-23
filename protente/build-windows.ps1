@@ -39,7 +39,7 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Analysis failed.' }
     & $Flutter build windows --release --no-pub "--build-name=$($metadata.version)" "--build-number=$($metadata.buildNumber)"
     if ($LASTEXITCODE -ne 0) { throw 'Windows Release build failed.' }
-    $payload = [IO.Path]::GetFullPath('build/windows/x64/runner/Release')
+    $payload = Join-Path $root 'mobile/apps/auth/build/windows/x64/runner/Release'
     & ./scripts/verify_windows_pe_allowlist.ps1 -PayloadDir $payload -AllowlistPath windows/signing/allowed-pe-files.txt
     if ($LASTEXITCODE -ne 0) { throw 'Unexpected Windows payload.' }
     $versionInfo = (Get-Item (Join-Path $payload $metadata.executable)).VersionInfo

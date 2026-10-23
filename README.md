@@ -25,6 +25,7 @@ not being developed or released here; 2FAS on your phone can remain unchanged.
 
 [Build and release instructions](protente/WINDOWS.md) ·
 [Scope and current stage status](protente/SPEC.md) ·
+[Security review context for resuming](protente/SECURITY-COMPARISON.md) ·
 [Baseline notice](protente/BASELINE-NOTICE.txt) ·
 [Releases](https://github.com/Darkaxt/ProtEnte/releases)
 

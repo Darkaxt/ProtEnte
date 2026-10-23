@@ -38,9 +38,13 @@ on the real Windows build/package checks (internal verification work). Initial C
 identified SDK bootstrap output before JSON and then Git dependency checkout paths
 over Windows' legacy limit. SDK initialization passed on run `40034622802`; Git
 long paths are now enabled through a process-scoped configuration override, as
-required by upstream's Windows recipe. App build/package acceptance is pending.
-Repository, source ancestry, PowerShell parsing, Dart formatting and static
-namespace/workflow checks have been inspected.
+required by upstream's Windows recipe. Run `40035322923` passed both Windows
+isolation checks, analysis of the changed Dart paths and native Release compilation.
+Its packaging check exposed relative .NET path resolution against the process
+directory; the payload now uses an explicit path from the repository root.
+Package/installer/startup acceptance remains pending. Repository, source ancestry,
+PowerShell parsing, Dart formatting and static namespace/workflow checks have
+been inspected.
 Tracked deferrals: none. Final delivery belongs to the second named stage.
 
 ## Explicit exclusions
