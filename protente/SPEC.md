@@ -33,47 +33,37 @@ on 2026-10-24. The remaining security work is a separate, later project scope.
 
 | Stage | Status | Requirements | Acceptance |
 | --- | --- | --- | --- |
-| Windows baseline | ACTIVE | R1-R4, R6 | Fork exists; identity/data/protocol isolation implemented; documented build produces the renamed app and packages; appropriate focused checks and Windows startup/package checks pass. |
-| Baseline delivery | NOT STARTED | R5, R6 | Current implementation verified and committed; remote source verified; release assets published and independently downloaded/checked; resume notes reflect actual results. |
+| Windows baseline | COMPLETE | R1-R4, R6 | Fork/history verified; isolation and branding implemented; Release build, focused checks, package identity and real Windows install/show/close/uninstall checks passed. |
+| Baseline delivery | ACTIVE | R5, R6 | Implementation verified and pushed; publication and independent public-download verification remain required. |
 
-Identity and packaging implementation is present. Baseline acceptance is blocked
-on the real Windows build/package checks (internal verification work). Initial CI
-identified SDK bootstrap output before JSON and then Git dependency checkout paths
-over Windows' legacy limit. SDK initialization passed on run `40034622802`; Git
-long paths are now enabled through a process-scoped configuration override, as
-required by upstream's Windows recipe. Run `40035322923` passed both Windows
-isolation checks, analysis of the changed Dart paths and native Release compilation.
-Its packaging check exposed relative .NET path resolution against the process
-directory; the payload now uses an explicit path from the repository root.
-Run `40036832594` passed the build, reviewed 19-PE payload membership, executable
-identity/version, credential namespace, ZIP/checksum/signature checks and actual
-silent installation. Its registry assertion used forward slashes, which the
-PowerShell registry provider does not accept (locally reproduced against the
-non-secret Software root). The verifier now uses native registry paths; native
-startup/uninstall and the corrected complete smoke test await re-verification.
-Run `40038415919` verified installation and the isolated protocol registration,
-then the test's raw WM_QUIT bypassed upstream's existing Windows quit handler and
-the process exited abnormally. The test now waits for the native show event and
-sends WM_CLOSE through the actual application close path; application behavior
-is unchanged. This corrected smoke check is the current internal acceptance
-blocker, resolved only by a passing real runner check, before delivery can start.
-Run `40039971760` passed compilation/packaging but revealed a test setup conflict:
-the application was launched hidden while the new test awaited a visible window.
-The run was explicitly cancelled for that conflict. The CI-only interactive app
-launch now uses normal visibility. Diagnostic milestones identify input readiness,
-window visibility and normal exit. The manual workflow can recheck an immutable
-package only after proving its application/build inputs match the checkout; this
-avoids recompiling unchanged application code when correcting verifier behavior.
-Repository, source ancestry, PowerShell parsing, Dart formatting and static
-namespace/workflow checks have been inspected.
+R1: GitHub confirms the public `Darkaxt/ProtEnte` fork and Ente parent. The audited
+upstream revision remains an ancestor; AGPL license and attribution are retained.
+R2-R4: build run `40039971760` produced source
+`629dad28601ce899be7ee136960afd4f1ea8ddcf` with the reviewed 19-PE allowlist,
+ProtEnte identity/version, distinct credential prefix, pinned dependencies,
+passing isolation checks and clean changed-path Dart analysis. Its original smoke
+attempt was cancelled because a hidden test launch conflicted with a visibility
+predicate. Verification run `40041560093` at verifier revision
+`576671b9876ce24affd89319349cddeac21a86b3` proved application/build inputs unchanged,
+then passed checksum/identity/signature checks and real silent installation,
+isolated protocol registration, visible native window startup, normal close
+(exit 0), and uninstall. Retrieved artifacts from both runs match byte for byte.
+Local static inspection also passed, without executing the app. Full Flutter UI,
+real-account and vault behavior are not claimed as verified.
+R6: build instructions, source comparison, explicit exclusions and resume notes
+are present. Stage-closure assessment found no material refactoring needed for
+this scope: one metadata file, canonical build/installer scripts and one manual
+workflow own the packaging path; no new runtime framework was introduced.
 R4 scope revision, explicitly authorized on 2026-10-24: user answered “Yes,
 document passkey sign-in as unsupported for this baseline.” Hosted Ente-account
 passkey sign-in is therefore excluded from this baseline, with the limitation
 recorded in the package notice, manifest, README and continuation notes. The
 provider callback restriction is not a baseline blocker or a tracked deferral.
-Resolving it would require a separately scoped provider integration. The remaining
-baseline advancement blocker is completion of the corrected smoke/package checks.
-Tracked deferrals: none. Final delivery belongs to the second named stage.
+Resolving it would require a separately scoped provider integration.
+Current internal R5 advancement blocker: publication and independent release
+retrieval have not yet occurred. Resolve by publishing the verified package at
+its exact source tag and checking downloaded assets, metadata and signatures.
+Overall completion depends on that delivery evidence. Tracked deferrals: none.
 
 ## Explicit exclusions
 

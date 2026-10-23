@@ -36,7 +36,7 @@ git submodule update --init --depth 1 mobile/apps/auth/assets/simple-icons
 Use task-owned scratch for TEMP/TMP/PUB_CACHE when preparing a disposable local
 build. Never change global environment settings. The script builds Windows only;
 Git long paths are enabled for the build's child processes and restored on exit.
-it does not invoke Android/Gradle or install on the local machine. `-SmokeTest`
+It does not invoke Android/Gradle or install on the local machine. `-SmokeTest`
 is deliberately restricted to a disposable GitHub Actions runner. It tests real
 silent installation, executable identity/native window startup, URL-handler
 isolation and uninstall. It does not claim full Flutter UI, account or vault
