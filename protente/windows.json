@@ -11,5 +11,6 @@
   "upstreamVersion": "4.4.26+1118",
   "upstreamCommit": "9684542adf1881515c49a60685cbf53423223e63",
   "additionalSecurityHardening": false,
+  "enteAccountPasskeySignIn": "unsupported",
   "authenticode": "unsigned"
 }

@@ -6,6 +6,10 @@ by Darkaxt. Not affiliated with or endorsed by Proton or Ente.
 **0.1.0 is a Windows packaging baseline. No additional security controls have
 been implemented. The application and installer are unsigned.**
 
+Known compatibility limitation: Ente's hosted account-passkey page rejects this
+fork's callback URL. This does not affect standard OTP generation. See the scope
+document for the current acceptance/delivery status.
+
 This fork starts from Ente Auth 4.4.26+1118
 (`9684542adf1881515c49a60685cbf53423223e63`) and preserves upstream source history,
 the AGPL-3.0 license and existing OTP/import formats. The Android application is

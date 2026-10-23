@@ -19,6 +19,10 @@ Existing Ente data is not migrated automatically. Import only when intended.
 The Windows upstream updater and Ente Sentry reporting are disabled.
 Updates: https://github.com/Darkaxt/ProtEnte/releases
 
+Known compatibility limitation: hosted Ente-account passkey sign-in rejects the
+fork's protente:// callback. This does not affect generation of standard OTPs.
+See the repository scope/status document before treating this as a final release.
+
 Ente account synchronization still uses Ente's service and data formats.
 Service-specific links and the application icon are inherited from upstream.
 The 2FAS import format and OTP generation behavior remain upstream.

@@ -12,6 +12,12 @@ upstream SHA-256-verified Flutter 3.47.2 archive, and `mobile/pubspec.lock`.
 Only this fork-specific workflow is active in the fork's default branch.
 It requires no Ente signing, store, cloud deployment or Sentry secrets.
 
+Runtime prerequisites follow upstream: Windows 10 or later with x64 app support
+and the Microsoft Visual C++ x64 runtime for the VS2022 toolchain. The installer
+does not install a system-wide runtime. See
+[Ente's Windows installation guidance](https://ente.com/help/auth/faq/installing).
+The hosted-runner smoke test does not prove operation on a bare Windows image.
+
 Local equivalent, in PowerShell 7 on a Windows checkout with VS2022 C++ desktop
 tools, Flutter 3.47.2 and Inno Setup 6:
 
@@ -33,7 +39,9 @@ workflow verification.
 Artifacts: portable `ProtEnte-0.1.0-windows-x64.zip`, per-user
 `ProtEnte-0.1.0-windows-x64-installer.exe`, `release-manifest.json`, `SHA256SUMS`
 and `package-verification.json`. Installer source remains in the build output
-for diagnosis. All are built from one source revision. PE membership is checked
+for diagnosis. Packages are retained after a smoke-test failure for diagnosis;
+an uploaded artifact alone is not a passed gate or permission to release.
+All are built from one source revision. PE membership is checked
 against the reviewed Windows allowlist. The portable directory includes the
 license, baseline notice and source/version manifest. Both executable and
 installer are unsigned; do not represent them as Ente-signed or hardened.
@@ -48,9 +56,11 @@ installer are unsigned; do not represent them as Ente-signed or hardened.
 - Installer ID: `EA53EBAB-98A0-4AB1-9DA6-5B76AC1E972F`; installation is per-user
   under `%LOCALAPPDATA%/Programs/ProtEnte` unless explicitly overridden.
 - URL handler: `protente://`, including search and configured passkey callback.
-  The existing `enteauth://` registration is not changed. Account passkey redirects
-  through Ente's external service have not been verified; email/password login and
-  account synchronization retain upstream implementation, not live-account proof.
+  The existing `enteauth://` registration is not changed. The pinned Accounts web
+  source's `isAllowedRedirectScheme` rejects `protente://`; hosted Ente-account
+  passkey sign-in is therefore a known compatibility blocker, not simply untested.
+  Email/password login and account synchronization retain upstream implementation,
+  not live-account proof. See the scope decision in `SPEC.md` before delivery.
 - Existing Ente data is not auto-migrated. Import explicitly using a supported
   backup if desired. Standard OTP and 2FAS import behavior remains upstream.
 - Upstream Windows update discovery is disabled; use this fork's GitHub releases.

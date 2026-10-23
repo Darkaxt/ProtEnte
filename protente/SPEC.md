@@ -42,9 +42,21 @@ required by upstream's Windows recipe. Run `40035322923` passed both Windows
 isolation checks, analysis of the changed Dart paths and native Release compilation.
 Its packaging check exposed relative .NET path resolution against the process
 directory; the payload now uses an explicit path from the repository root.
-Package/installer/startup acceptance remains pending. Repository, source ancestry,
-PowerShell parsing, Dart formatting and static namespace/workflow checks have
-been inspected.
+Run `40036832594` passed the build, reviewed 19-PE payload membership, executable
+identity/version, credential namespace, ZIP/checksum/signature checks and actual
+silent installation. Its registry assertion used forward slashes, which the
+PowerShell registry provider does not accept (locally reproduced against the
+non-secret Software root). The verifier now uses native registry paths; native
+startup/uninstall and the corrected complete smoke test await re-verification.
+Repository, source ancestry, PowerShell parsing, Dart formatting and static
+namespace/workflow checks have been inspected.
+External R4 compatibility blocker: the upstream Accounts web passkey page's
+`isAllowedRedirectScheme` rejects `protente://` before authentication. A separate
+fork URL handler therefore cannot preserve automatic hosted passkey sign-in
+without provider integration. Resolution is a compatible verified flow/provider
+allowlist change, or an explicit user-approved exclusion of Ente-account passkey
+sign-in from this packaging baseline. R4 acceptance and final release remain
+dependent on that decision. A clarification is pending; no exclusion is assumed.
 Tracked deferrals: none. Final delivery belongs to the second named stage.
 
 ## Explicit exclusions

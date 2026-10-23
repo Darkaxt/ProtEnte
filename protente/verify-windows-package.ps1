@@ -50,13 +50,13 @@ if ($SmokeTest) {
     if ($env:GITHUB_ACTIONS -ne 'true' -or -not $env:RUNNER_TEMP) { throw 'Installation smoke test is restricted to disposable GitHub runners.' }
     $install = Join-Path $env:RUNNER_TEMP 'ProtEnte-smoke-install'
     if (Test-Path -LiteralPath $install) { throw 'Smoke installation already exists.' }
-    $upstreamProtocol = 'Registry::HKEY_CURRENT_USER/Software/Classes/enteauth/shell/open/command'
+    $upstreamProtocol = 'Registry::HKEY_CURRENT_USER\Software\Classes\enteauth\shell\open\command'
     $previousUpstream = if (Test-Path $upstreamProtocol) { (Get-Item $upstreamProtocol).GetValue('') } else { $null }
     $installer = Start-Process -FilePath (Join-Path $root "$stem-installer.exe") -ArgumentList @('/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART',"/DIR=`"$install`"") -Wait -PassThru
     if ($installer.ExitCode -ne 0) { throw "Installer failed: $($installer.ExitCode)" }
     $installedExe = Join-Path $install 'protente.exe'
     if ((Get-FileHash $installedExe).Hash -ne (Get-FileHash $exe).Hash) { throw 'Installed executable differs from ZIP.' }
-    $protocol = (Get-Item 'Registry::HKEY_CURRENT_USER/Software/Classes/protente/shell/open/command').GetValue('')
+    $protocol = (Get-Item 'Registry::HKEY_CURRENT_USER\Software\Classes\protente\shell\open\command').GetValue('')
     if ($protocol -ne "`"$installedExe`" `"%1`"") { throw "Incorrect URL handler: $protocol" }
     Add-Type -TypeDefinition @'
 using System;

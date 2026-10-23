@@ -93,5 +93,12 @@ obtain a superficial memory-cleanup claim, and do not equate added UI prompts
 with stronger key protection. Prototype authentication-bound Hello operations
 separately if that guarantee is required.
 
-Real account login, Ente passkey callback acceptance, production-vault migration
-and memory-extraction resistance were not validated by the packaging baseline.
+The hosted Accounts passkey callback has a known integration blocker: the pinned
+`web/apps/accounts/src/services/passkey.ts` function `isAllowedRedirectScheme`
+does not allow `protente://`, and `pages/passkeys/verify.tsx` rejects the URL before
+authentication. Do not describe this as merely untested or hijack `enteauth://`
+to conceal the limitation. Resolve the provider integration or obtain an explicit
+scope exclusion before declaring full account compatibility.
+
+Real account login, production-vault migration and memory-extraction resistance
+were not validated by the packaging baseline.
