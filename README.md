@@ -8,7 +8,9 @@ been implemented. The application and installer are unsigned.**
 
 Known compatibility limitation: Ente's hosted account-passkey page rejects this
 fork's callback URL. This does not affect standard OTP generation. See the scope
-document for the current acceptance/delivery status.
+document for the explicit baseline scope. The
+[0.1.0 installer and portable ZIP](https://github.com/Darkaxt/ProtEnte/releases/tag/protente-v0.1.0)
+are published; delivery evidence and continuation notes are in `protente/WINDOWS.md`.
 
 This fork starts from Ente Auth 4.4.26+1118
 (`9684542adf1881515c49a60685cbf53423223e63`) and preserves upstream source history,

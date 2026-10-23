@@ -86,6 +86,36 @@ Do not publish every intermediate build. Keep future version/build changes in
 
 ## Resume
 
+Delivered baseline:
+[ProtEnte 0.1.0](https://github.com/Darkaxt/ProtEnte/releases/tag/protente-v0.1.0),
+published 2026-10-24 local time as a normal release, with all five required assets.
+Tag `protente-v0.1.0` resolves to built source
+`629dad28601ce899be7ee136960afd4f1ea8ddcf`.
+[Build run](https://github.com/Darkaxt/ProtEnte/actions/runs/40039971760)
+passed compilation, analysis, isolation checks and packaging; its original smoke
+test was cancelled for a launcher conflict. The
+[successful package verification](https://github.com/Darkaxt/ProtEnte/actions/runs/40041560093)
+used verifier revision `576671b9876ce24affd89319349cddeac21a86b3`, proved build inputs
+unchanged and passed the real install/show/normal-close/uninstall round trip on
+the same package bytes. The checked-in release notes explain this provenance.
+
+All five release files were independently downloaded through public URLs without
+authentication and matched the tested CI artifacts. Static verification was repeated
+against the public package, confirming ProtEnte 0.1.0+1, its source manifest,
+credential prefix and **NotSigned** status for both EXEs. Runtime round-trip
+evidence comes from the disposable runner; the local check only inspected files.
+No full rendered Flutter UI, real account, personal seeds or production vault
+was used or verified. Later documentation/verifier/workflow commits do not change
+the released application or package inputs.
+
+| Public asset | SHA-256 |
+| --- | --- |
+| `ProtEnte-0.1.0-windows-x64-installer.exe` | `a027e28691f392858d689bb422afb35d98b5ba1a303552c14ee9444fa86f000b` |
+| `ProtEnte-0.1.0-windows-x64.zip` | `43b09ba2a861ef98eb98909e2d8ed82a5e7f5f93f2f77c61bc0e59f8f7229ff8` |
+| `release-manifest.json` | `2460cc3706fcce9cc150a0970e2aed3c6978dc0ab410d876effd9e83953134ab` |
+| `SHA256SUMS` | `759bc749fa15980814090f079a53faa29919aff692678be6c022c9d8133a924e` |
+| `package-verification.json` | `aadb016a82aee265f5c3064399578ff6cedc19f44b0049846ed5e054d4a3f558` |
+
 Read `SPEC.md`, this document and the root README. Preserve the audited source
 baseline and separate Windows namespaces. Inspect the current branch, worktree
 and release evidence before modifying code. The next project is security

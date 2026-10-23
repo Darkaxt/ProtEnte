@@ -34,7 +34,7 @@ on 2026-10-24. The remaining security work is a separate, later project scope.
 | Stage | Status | Requirements | Acceptance |
 | --- | --- | --- | --- |
 | Windows baseline | COMPLETE | R1-R4, R6 | Fork/history verified; isolation and branding implemented; Release build, focused checks, package identity and real Windows install/show/close/uninstall checks passed. |
-| Baseline delivery | ACTIVE | R5, R6 | Implementation verified and pushed; publication and independent public-download verification remain required. |
+| Baseline delivery | COMPLETE | R5, R6 | Published 0.1.0 at the exact built source tag; all five public downloads matched tested artifacts; downloaded package metadata, namespace, checksums and unsigned status verified; continuation evidence recorded. |
 
 R1: GitHub confirms the public `Darkaxt/ProtEnte` fork and Ente parent. The audited
 upstream revision remains an ancestor; AGPL license and attribution are retained.
@@ -60,10 +60,16 @@ passkey sign-in is therefore excluded from this baseline, with the limitation
 recorded in the package notice, manifest, README and continuation notes. The
 provider callback restriction is not a baseline blocker or a tracked deferral.
 Resolving it would require a separately scoped provider integration.
-Current internal R5 advancement blocker: publication and independent release
-retrieval have not yet occurred. Resolve by publishing the verified package at
-its exact source tag and checking downloaded assets, metadata and signatures.
-Overall completion depends on that delivery evidence. Tracked deferrals: none.
+R5: normal published release `protente-v0.1.0` is neither draft nor pre-release;
+its annotated tag resolves to the exact built source revision above. All five
+assets were independently retrieved from public download URLs without credentials
+and matched the tested artifacts byte for byte. Static inspection of the public
+ZIP/installer again passed version/identity, source-manifest, credential namespace,
+mandatory-file, checksum and NotSigned checks. See `WINDOWS.md` for hashes and
+verification links. No application was installed or executed on the user's PC.
+Final reconciliation: R1-R6 satisfied within the explicit scope revision; the
+unchanged stage-closure assessment still applies. Blockers: none. Tracked
+deferrals: none. Future security work remains outside this completed baseline.
 
 ## Explicit exclusions
 
