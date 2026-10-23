@@ -14,11 +14,10 @@ Compression=zip
 SolidCompression=yes
 SetupIconFile={{SETUP_ICON_FILE}}
 WizardStyle=modern
-;PrivilegesRequired={{PRIVILEGES_REQUIRED}}
-PrivilegesRequiredOverridesAllowed=dialog
+PrivilegesRequired=lowest
 ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
-UninstallDisplayIcon={app}\auth.exe
+UninstallDisplayIcon={app}\protente.exe
 
 [Languages]
 {% for locale in LOCALES %}

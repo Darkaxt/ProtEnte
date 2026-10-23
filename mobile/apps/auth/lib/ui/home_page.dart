@@ -1538,7 +1538,10 @@ class _HomePageState extends State<HomePage> {
           ? Stack(
               alignment: Alignment.center,
               children: [
-                if (!_showSearchBox) const AuthLogoWidget(height: 18),
+                if (!_showSearchBox)
+                  Platform.isWindows
+                      ? const Text("ProtEnte")
+                      : const AuthLogoWidget(height: 18),
                 PersistentSearchField(
                   visible: _showSearchBox,
                   child: searchField,

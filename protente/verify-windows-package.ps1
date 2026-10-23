@@ -31,7 +31,8 @@ foreach ($required in @('LICENSE','BASELINE-NOTICE.txt','flutter_windows.dll','d
     if (-not (Test-Path -LiteralPath (Join-Path $bundle $required))) { throw "Missing packaged file: $required" }
 }
 $signature = Get-AuthenticodeSignature -LiteralPath $exe
-if ($signature.Status -ne 'NotSigned') { throw "Review unexpected Authenticode status: $($signature.Status)" }
+$installerSignature = Get-AuthenticodeSignature -LiteralPath (Join-Path $root "$stem-installer.exe")
+if ($signature.Status -ne 'NotSigned' -or $installerSignature.Status -ne 'NotSigned') { throw 'Review unexpected Authenticode status.' }
 $verification = [ordered]@{
     sourceRevision = $manifest.sourceRevision
     version = $manifest.version
@@ -39,6 +40,7 @@ $verification = [ordered]@{
     executableIdentityVerified = $true
     credentialNamespaceVerified = $true
     authenticode = [string]$signature.Status
+    installerAuthenticode = [string]$installerSignature.Status
     installerRoundTripVerified = $false
     nativeWindowStartupVerified = $false
     renderedFlutterUiVerified = $false
