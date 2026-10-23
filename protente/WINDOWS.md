@@ -58,9 +58,10 @@ installer are unsigned; do not represent them as Ente-signed or hardened.
 - URL handler: `protente://`, including search and configured passkey callback.
   The existing `enteauth://` registration is not changed. The pinned Accounts web
   source's `isAllowedRedirectScheme` rejects `protente://`; hosted Ente-account
-  passkey sign-in is therefore a known compatibility blocker, not simply untested.
+  passkey sign-in is therefore explicitly unsupported in this baseline, as
+  authorized by the user on 2026-10-24; it is not simply untested.
   Email/password login and account synchronization retain upstream implementation,
-  not live-account proof. See the scope decision in `SPEC.md` before delivery.
+  not live-account proof. See the scope decision in `SPEC.md`.
 - Existing Ente data is not auto-migrated. Import explicitly using a supported
   backup if desired. Standard OTP and 2FAS import behavior remains upstream.
 - Upstream Windows update discovery is disabled; use this fork's GitHub releases.

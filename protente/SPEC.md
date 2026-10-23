@@ -17,7 +17,10 @@ on 2026-10-24. The remaining security work is a separate, later project scope.
   ZIP, per-user installer, source/version manifest and SHA-256 checksums.
 - R4: Route Windows release discovery to this fork (or explicitly disable the
   upstream updater); never offer upstream Ente as a ProtEnte update. Do not send
-  fork crash reports to Ente's Sentry project. Preserve Ente account/API behavior.
+  fork crash reports to Ente's Sentry project. Preserve upstream account API
+  identity and token/data formats. Hosted Ente-account passkey sign-in is excluded
+  by the explicit scope revision below; other account flows retain upstream code
+  and are not claimed as live-account verified.
 - R5: Verify the completed baseline against real build/package outputs, commit
   and push it, publish one baseline release and independently retrieve/check its
   assets. State Authenticode status accurately; Ente's signing identity cannot be
@@ -48,15 +51,21 @@ silent installation. Its registry assertion used forward slashes, which the
 PowerShell registry provider does not accept (locally reproduced against the
 non-secret Software root). The verifier now uses native registry paths; native
 startup/uninstall and the corrected complete smoke test await re-verification.
+Run `40038415919` verified installation and the isolated protocol registration,
+then the test's raw WM_QUIT bypassed upstream's existing Windows quit handler and
+the process exited abnormally. The test now waits for the native show event and
+sends WM_CLOSE through the actual application close path; application behavior
+is unchanged. This corrected smoke check is the current internal acceptance
+blocker, resolved only by a passing real runner check, before delivery can start.
 Repository, source ancestry, PowerShell parsing, Dart formatting and static
 namespace/workflow checks have been inspected.
-External R4 compatibility blocker: the upstream Accounts web passkey page's
-`isAllowedRedirectScheme` rejects `protente://` before authentication. A separate
-fork URL handler therefore cannot preserve automatic hosted passkey sign-in
-without provider integration. Resolution is a compatible verified flow/provider
-allowlist change, or an explicit user-approved exclusion of Ente-account passkey
-sign-in from this packaging baseline. R4 acceptance and final release remain
-dependent on that decision. A clarification is pending; no exclusion is assumed.
+R4 scope revision, explicitly authorized on 2026-10-24: user answered “Yes,
+document passkey sign-in as unsupported for this baseline.” Hosted Ente-account
+passkey sign-in is therefore excluded from this baseline, with the limitation
+recorded in the package notice, manifest, README and continuation notes. The
+provider callback restriction is not a baseline blocker or a tracked deferral.
+Resolving it would require a separately scoped provider integration. The remaining
+baseline advancement blocker is completion of the corrected smoke/package checks.
 Tracked deferrals: none. Final delivery belongs to the second named stage.
 
 ## Explicit exclusions

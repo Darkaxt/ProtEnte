@@ -100,5 +100,12 @@ authentication. Do not describe this as merely untested or hijack `enteauth://`
 to conceal the limitation. Resolve the provider integration or obtain an explicit
 scope exclusion before declaring full account compatibility.
 
+A public-page check on 2026-10-24 used the same synthetic invalid session ID for
+both callbacks, without signing into any account. `protente://passkey` produced
+“The login URL is invalid.” The allowed `enteauth://passkey` control passed URL
+validation and instead produced the expected generic passkey-session error. This
+confirms the callback limitation on the hosted page as well as in pinned source;
+it is not evidence of successful account authentication.
+
 Real account login, production-vault migration and memory-extraction resistance
 were not validated by the packaging baseline.

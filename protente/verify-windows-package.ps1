@@ -60,22 +60,78 @@ if ($SmokeTest) {
     if ($protocol -ne "`"$installedExe`" `"%1`"") { throw "Incorrect URL handler: $protocol" }
     Add-Type -TypeDefinition @'
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 public static class ProtEnteSmokeWindow {
-    [DllImport("user32.dll", CharSet=CharSet.Unicode)] public static extern IntPtr FindWindow(string name, string title);
-    [DllImport("user32.dll")] public static extern uint GetWindowThreadProcessId(IntPtr hwnd, out uint processId);
-    [DllImport("user32.dll", SetLastError=true)] public static extern bool PostThreadMessage(uint id, uint message, UIntPtr wParam, IntPtr lParam);
+    delegate void WinEventProc(IntPtr hook, uint evt, IntPtr hwnd, int obj, int child, uint thread, uint time);
+    [StructLayout(LayoutKind.Sequential)] struct Point { public int X, Y; }
+    [StructLayout(LayoutKind.Sequential)] struct Message { public IntPtr Hwnd; public uint Id; public UIntPtr WParam; public IntPtr LParam; public uint Time; public Point Position; public uint Private; }
+    [DllImport("user32.dll", CharSet=CharSet.Unicode)] static extern IntPtr FindWindow(string name, string title);
+    [DllImport("user32.dll")] static extern uint GetWindowThreadProcessId(IntPtr hwnd, out uint processId);
+    [DllImport("user32.dll")] static extern bool IsWindowVisible(IntPtr hwnd);
+    [DllImport("user32.dll", SetLastError=true)] static extern IntPtr SetWinEventHook(uint first, uint last, IntPtr module, WinEventProc callback, uint process, uint thread, uint flags);
+    [DllImport("user32.dll")] static extern bool UnhookWinEvent(IntPtr hook);
+    [DllImport("user32.dll", SetLastError=true)] static extern bool PostMessage(IntPtr hwnd, uint message, UIntPtr wParam, IntPtr lParam);
+    [DllImport("user32.dll", SetLastError=true)] static extern bool PostThreadMessage(uint thread, uint message, UIntPtr wParam, IntPtr lParam);
+    [DllImport("user32.dll")] static extern void PostQuitMessage(int code);
+    [DllImport("user32.dll")] static extern int GetMessage(out Message message, IntPtr hwnd, uint min, uint max);
+    [DllImport("user32.dll")] static extern bool PeekMessage(out Message message, IntPtr hwnd, uint min, uint max, uint remove);
+    [DllImport("user32.dll")] static extern bool TranslateMessage(ref Message message);
+    [DllImport("user32.dll")] static extern IntPtr DispatchMessage(ref Message message);
+    [DllImport("kernel32.dll")] static extern uint GetCurrentThreadId();
+
+    public static void WaitForShownWindowAndClose(Process process) {
+        // Window visibility follows Dart's listener registration and prevent-close
+        // setup. Wait for that event instead of treating input-idle as app-ready.
+        uint owner = GetCurrentThreadId();
+        Message message;
+        PeekMessage(out message, IntPtr.Zero, 0, 0, 0); // Create this thread's queue.
+        bool requested = false;
+        bool pumping = false;
+        string failure = null;
+        Action inspect = () => {
+            if (requested || failure != null) return;
+            IntPtr window = FindWindow("FLUTTER_RUNNER_WIN32_WINDOW", "ProtEnte");
+            uint pid;
+            GetWindowThreadProcessId(window, out pid);
+            if (window == IntPtr.Zero || pid != process.Id || !IsWindowVisible(window)) return;
+            // WM_CLOSE invokes the application's actual Windows quit path.
+            if (PostMessage(window, 0x0010, UIntPtr.Zero, IntPtr.Zero)) requested = true;
+            else failure = "Could not request normal window close.";
+            if (pumping) PostQuitMessage(0);
+        };
+        WinEventProc callback = (hook, evt, hwnd, obj, child, thread, time) => inspect();
+        IntPtr subscription = SetWinEventHook(0x8002, 0x8002, IntPtr.Zero, callback, (uint)process.Id, 0, 0);
+        if (subscription == IntPtr.Zero) throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error());
+        EventHandler exited = (sender, args) => PostThreadMessage(owner, 0x0012, UIntPtr.Zero, IntPtr.Zero);
+        try {
+            process.Exited += exited;
+            process.EnableRaisingEvents = true;
+            inspect(); // Also handle a window shown before the hook was installed.
+            if (!requested && !process.HasExited) {
+                pumping = true;
+                int result;
+                while ((result = GetMessage(out message, IntPtr.Zero, 0, 0)) > 0) {
+                    TranslateMessage(ref message);
+                    DispatchMessage(ref message);
+                }
+                if (result < 0) throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error());
+            }
+            if (failure != null) throw new Exception(failure);
+            if (!requested) throw new Exception("Application exited before its ProtEnte window was shown.");
+        } finally {
+            process.Exited -= exited;
+            UnhookWinEvent(subscription);
+            GC.KeepAlive(callback);
+        }
+    }
 }
 '@
     $process = Start-Process -FilePath $installedExe -WindowStyle Hidden -PassThru
     try {
         if (-not $process.WaitForInputIdle()) { throw 'Application did not reach its native input loop.' }
-        $window = [ProtEnteSmokeWindow]::FindWindow('FLUTTER_RUNNER_WIN32_WINDOW','ProtEnte')
-        [uint32]$windowProcess = 0
-        $thread = [ProtEnteSmokeWindow]::GetWindowThreadProcessId($window, [ref]$windowProcess)
-        if ($window -eq [IntPtr]::Zero -or $windowProcess -ne $process.Id) { throw 'The test process did not create the ProtEnte window.' }
+        [ProtEnteSmokeWindow]::WaitForShownWindowAndClose($process)
         $verification.nativeWindowStartupVerified = $true
-        if (-not [ProtEnteSmokeWindow]::PostThreadMessage($thread, 0x0012, [UIntPtr]::Zero, [IntPtr]::Zero)) { throw 'Could not request native loop shutdown.' }
         $process.WaitForExit()
         if ($process.ExitCode -ne 0) { throw "Application exited abnormally: $($process.ExitCode)" }
     } finally { $process.Dispose() }
