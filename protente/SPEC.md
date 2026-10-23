@@ -33,8 +33,12 @@ on 2026-10-24. The remaining security work is a separate, later project scope.
 | Windows baseline | ACTIVE | R1-R4, R6 | Fork exists; identity/data/protocol isolation implemented; documented build produces the renamed app and packages; appropriate focused checks and Windows startup/package checks pass. |
 | Baseline delivery | NOT STARTED | R5, R6 | Current implementation verified and committed; remote source verified; release assets published and independently downloaded/checked; resume notes reflect actual results. |
 
-Current blockers to baseline acceptance: identity, packaging and verification
-remain to be implemented. These are internal work, not external impediments.
+Identity and packaging implementation is present. Baseline acceptance is blocked
+on the real Windows build/package checks (internal verification work). First CI
+run `40034263745` exposed fresh Flutter bootstrap output before JSON; initialization
+is now explicit and awaits re-verification. No product behavior was verified by
+that failed run. Repository, source ancestry, PowerShell parsing, Dart formatting
+and static namespace/workflow checks have been inspected.
 Tracked deferrals: none. Final delivery belongs to the second named stage.
 
 ## Explicit exclusions

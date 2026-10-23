@@ -11,6 +11,8 @@ $metadata = Get-Content -Raw (Join-Path $PSScriptRoot 'windows.json') | ConvertF
 $output = [IO.Path]::GetFullPath($OutputDirectory)
 if ((Test-Path -LiteralPath $output) -and (Get-ChildItem -LiteralPath $output -Force)) { throw "Use an empty output directory: $output" }
 New-Item -ItemType Directory -Force -Path $output | Out-Null
+& $Flutter --version
+if ($LASTEXITCODE -ne 0) { throw 'Flutter tool initialization failed.' }
 $flutterInfo = (& $Flutter --version --machine | ConvertFrom-Json)
 if ($LASTEXITCODE -ne 0 -or $flutterInfo.frameworkVersion -ne $metadata.flutterVersion) { throw "Flutter $($metadata.flutterVersion) is required." }
 $sourceRevision = git -C $root rev-parse HEAD
