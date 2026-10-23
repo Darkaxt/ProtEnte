@@ -18,6 +18,17 @@ if ($LASTEXITCODE -ne 0 -or $flutterInfo.frameworkVersion -ne $metadata.flutterV
 $sourceRevision = git -C $root rev-parse HEAD
 if ($LASTEXITCODE -ne 0) { throw 'Cannot identify source revision.' }
 $stem = "ProtEnte-$($metadata.version)-windows-x64"
+$previousGitConfigCount = $env:GIT_CONFIG_COUNT
+$gitConfigIndex = if ($previousGitConfigCount) { [int]$previousGitConfigCount } else { 0 }
+$gitConfigKey = "GIT_CONFIG_KEY_$gitConfigIndex"
+$gitConfigValue = "GIT_CONFIG_VALUE_$gitConfigIndex"
+$previousGitConfigKey = [Environment]::GetEnvironmentVariable($gitConfigKey)
+$previousGitConfigValue = [Environment]::GetEnvironmentVariable($gitConfigValue)
+# Pub checks out whole plugin repositories, including long non-Windows paths.
+# Scope Git's supported configuration override to this process and its children.
+[Environment]::SetEnvironmentVariable($gitConfigKey, 'core.longpaths')
+[Environment]::SetEnvironmentVariable($gitConfigValue, 'true')
+$env:GIT_CONFIG_COUNT = [string]($gitConfigIndex + 1)
 Push-Location (Join-Path $root 'mobile/apps/auth')
 try {
     & $Flutter pub get --enforce-lockfile
@@ -53,4 +64,9 @@ try {
     }
     $checksums | Set-Content -Encoding ascii (Join-Path $output 'SHA256SUMS')
     Write-Host "Packaged unsigned ProtEnte $($metadata.version) from $sourceRevision in $output"
-} finally { Pop-Location }
+} finally {
+    Pop-Location
+    $env:GIT_CONFIG_COUNT = $previousGitConfigCount
+    [Environment]::SetEnvironmentVariable($gitConfigKey, $previousGitConfigKey)
+    [Environment]::SetEnvironmentVariable($gitConfigValue, $previousGitConfigValue)
+}

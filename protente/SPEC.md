@@ -34,11 +34,13 @@ on 2026-10-24. The remaining security work is a separate, later project scope.
 | Baseline delivery | NOT STARTED | R5, R6 | Current implementation verified and committed; remote source verified; release assets published and independently downloaded/checked; resume notes reflect actual results. |
 
 Identity and packaging implementation is present. Baseline acceptance is blocked
-on the real Windows build/package checks (internal verification work). First CI
-run `40034263745` exposed fresh Flutter bootstrap output before JSON; initialization
-is now explicit and awaits re-verification. No product behavior was verified by
-that failed run. Repository, source ancestry, PowerShell parsing, Dart formatting
-and static namespace/workflow checks have been inspected.
+on the real Windows build/package checks (internal verification work). Initial CI
+identified SDK bootstrap output before JSON and then Git dependency checkout paths
+over Windows' legacy limit. SDK initialization passed on run `40034622802`; Git
+long paths are now enabled through a process-scoped configuration override, as
+required by upstream's Windows recipe. App build/package acceptance is pending.
+Repository, source ancestry, PowerShell parsing, Dart formatting and static
+namespace/workflow checks have been inspected.
 Tracked deferrals: none. Final delivery belongs to the second named stage.
 
 ## Explicit exclusions
