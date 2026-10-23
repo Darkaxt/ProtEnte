@@ -1,0 +1,44 @@
+name: ProtEnte Windows packaging
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: protente-windows
+  cancel-in-progress: false
+
+jobs:
+  windows:
+    runs-on: windows-2022
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: Checkout the selected revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          submodules: recursive
+          sparse-checkout: |
+            mobile
+            protente
+            .github/actions/setup-flutter
+      - name: Install pinned Flutter
+        uses: ./.github/actions/setup-flutter
+      - name: Build, check and package
+        run: ./protente/build-windows.ps1 -OutputDirectory "$env:RUNNER_TEMP/ProtEnte-release"
+      - name: Verify installer and application startup on the disposable runner
+        run: ./protente/verify-windows-package.ps1 -ArtifactDirectory "$env:RUNNER_TEMP/ProtEnte-release" -SmokeTest
+      - name: Upload verified release files
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: ProtEnte-windows-x64
+          path: |
+            ${{ runner.temp }}/ProtEnte-release/*.zip
+            ${{ runner.temp }}/ProtEnte-release/*-installer.exe
+            ${{ runner.temp }}/ProtEnte-release/release-manifest.json
+            ${{ runner.temp }}/ProtEnte-release/SHA256SUMS
+            ${{ runner.temp }}/ProtEnte-release/package-verification.json
+          if-no-files-found: error

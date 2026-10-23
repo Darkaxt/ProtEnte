@@ -54,7 +54,7 @@ Future<void> initSystemTray() async {
       : _linuxTrayIconPath();
   await trayManager.setIcon(path, isTemplate: true);
   if (Platform.isWindows) {
-    await trayManager.setToolTip("Ente Auth");
+    await trayManager.setToolTip("ProtEnte");
   }
   Menu menu = Menu(
     items: [
@@ -177,7 +177,7 @@ Future _runWithLogs(Function() function, {String prefix = ""}) async {
       body: function,
       logDirPath: dir,
       maxLogFiles: 5,
-      sentryDsn: sentryDSN,
+      sentryDsn: Platform.isWindows ? null : sentryDSN,
       enableInDebugMode: true,
       prefix: prefix,
     ),
@@ -185,7 +185,7 @@ Future _runWithLogs(Function() function, {String prefix = ""}) async {
 }
 
 void _registerWindowsProtocol() {
-  const kWindowsScheme = 'enteauth';
+  const kWindowsScheme = 'protente';
   if (!kIsWeb && Platform.isWindows) {
     WindowsProtocolHandler().register(
       kWindowsScheme,

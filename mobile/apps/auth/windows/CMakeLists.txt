@@ -1,10 +1,12 @@
 cmake_minimum_required(VERSION 3.14)
-project(auth LANGUAGES CXX)
+project(protente LANGUAGES CXX)
 
 # Preserve the pre-Sentry 9 desktop crash-handling behavior.
 set(ENV{SENTRY_NATIVE_BACKEND} "none")
 
-set(BINARY_NAME "auth")
+set(BINARY_NAME "protente")
+# flutter_secure_storage_windows uses this prefix for Credential Manager keys.
+set(STORAGE_PREFIX "protente")
 
 cmake_policy(VERSION 3.14...3.25)
 

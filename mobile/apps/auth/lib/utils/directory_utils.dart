@@ -30,6 +30,8 @@ class DirectoryUtils {
 
   static String migratedNamingChanges = "migrated_naming_changes.b5";
   static Future<void> migrateNamingChanges() async {
+    // ProtEnte starts with its own vault. Never copy upstream Ente's databases.
+    if (Platform.isWindows) return;
     try {
       final sharedPrefs = await SharedPreferences.getInstance();
       if (sharedPrefs.containsKey(migratedNamingChanges)) {

@@ -1684,9 +1684,8 @@ class _HomePageState extends State<HomePage> {
                   const SizedBox(width: 8),
                   Text(
                     '${selectedIds.length} ${l10n.selected}',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: Theme.of(context).textTheme.titleMedium
+                        ?.copyWith(fontWeight: FontWeight.w600),
                   ),
                   const Spacer(),
                   AnimatedSwitcher(
@@ -2012,7 +2011,10 @@ class _HomePageState extends State<HomePage> {
     final debugCodeLink = parseDebugCodeDeepLink(link);
     if (mounted && debugCodeLink != null) {
       _handleDebugCodeLink(debugCodeLink);
-    } else if (mounted && lowerLink.startsWith("enteauth://search")) {
+    } else if (mounted &&
+        lowerLink.startsWith(
+          Platform.isWindows ? "protente://search" : "enteauth://search",
+        )) {
       try {
         final uri = Uri.parse(link);
         final searchQuery = uri.queryParameters['query'];

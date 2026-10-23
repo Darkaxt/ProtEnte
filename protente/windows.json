@@ -1,0 +1,15 @@
+{
+  "name": "ProtEnte",
+  "version": "0.1.0",
+  "buildNumber": 1,
+  "executable": "protente.exe",
+  "publisher": "Darkaxt",
+  "installerAppId": "EA53EBAB-98A0-4AB1-9DA6-5B76AC1E972F",
+  "protocolScheme": "protente",
+  "flutterVersion": "3.47.2",
+  "repository": "https://github.com/Darkaxt/ProtEnte",
+  "upstreamVersion": "4.4.26+1118",
+  "upstreamCommit": "9684542adf1881515c49a60685cbf53423223e63",
+  "additionalSecurityHardening": false,
+  "authenticode": "unsigned"
+}

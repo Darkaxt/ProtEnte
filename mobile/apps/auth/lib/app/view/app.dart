@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:ente_accounts/services/user_service.dart';
 import 'package:ente_auth/core/configuration.dart';
@@ -122,7 +123,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "ente",
+      title: Platform.isWindows ? "ProtEnte" : "ente",
       themeMode: _themeMode,
       theme: lightThemeData,
       darkTheme: darkThemeData,

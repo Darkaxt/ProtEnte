@@ -103,7 +103,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
       backgroundColor: accentColor,
       appBar: AppBar(
         leading: const SizedBox(),
-        title: SvgPicture.asset("assets/svg/app-logo.svg"),
+        title: Platform.isWindows
+            ? const Text("ProtEnte")
+            : SvgPicture.asset("assets/svg/app-logo.svg"),
         backgroundColor: accentColor,
         elevation: 0,
         scrolledUnderElevation: 0,
@@ -527,9 +529,8 @@ class _FeatureItemWidget extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
           child: Text(
             title,
-            style: getEnteTextTheme(
-              context,
-            ).largeBold.copyWith(color: Colors.white),
+            style: getEnteTextTheme(context).largeBold
+                .copyWith(color: Colors.white),
             textAlign: TextAlign.center,
           ),
         ),

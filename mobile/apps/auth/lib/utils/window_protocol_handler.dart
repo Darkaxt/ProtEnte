@@ -13,7 +13,12 @@ class WindowsProtocolHandler {
 
     _regCreateStringKey(_hive, prefix, '', 'URL:$capitalized');
     _regCreateStringKey(_hive, prefix, 'URL Protocol', '');
-    _regCreateStringKey(_hive, '$prefix\\shell\\open\\command', '', cmd);
+    _regCreateStringKey(
+      _hive,
+      '$prefix\\shell\\open\\command',
+      '',
+      '"$cmd" "%1"',
+    );
   }
 
   void unregister(String scheme) {

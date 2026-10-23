@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:ente_account_deletion/account_deletion.dart';
@@ -16,10 +17,12 @@ class Configuration extends BaseConfiguration
 
   static final Configuration instance = Configuration._privateConstructor();
   @override
-  EnteAppIdentity get appIdentity => const EnteAppIdentity(
+  EnteAppIdentity get appIdentity => EnteAppIdentity(
     app: "auth",
     clientPackageName: "io.ente.auth",
-    passkeyRedirectUrl: "enteauth://passkey",
+    passkeyRedirectUrl: Platform.isWindows
+        ? "protente://passkey"
+        : "enteauth://passkey",
     referralSourcePrefix: "auth",
   );
 

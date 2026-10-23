@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:ente_auth/services/update_service.dart';
 import 'package:ente_auth/ui/settings/app_update_sheet.dart';
 import 'package:ente_auth/ui/settings/components/auth_settings_page_scaffold.dart';
@@ -15,6 +17,15 @@ class AboutSettingsPage extends StatelessWidget {
     return AuthSettingsPageScaffold(
       title: l10n.about,
       children: [
+        if (Platform.isWindows)
+          const Padding(
+            padding: EdgeInsets.only(bottom: 16),
+            child: Text(
+              'ProtEnte — an independent Windows fork of Ente Auth. '
+              'This baseline contains no additional security hardening. '
+              'Releases: github.com/Darkaxt/ProtEnte',
+            ),
+          ),
         AboutSettingsSection(
           onCheckForUpdates: UpdateService.instance.supportsInAppUpdates()
               ? () => _checkForUpdates(context)

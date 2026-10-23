@@ -116,6 +116,9 @@ class UpdateService {
   }
 
   bool supportsInAppUpdates() {
+    // Upstream release metadata points to Ente binaries, not this fork.
+    // ProtEnte baseline updates are distributed through its GitHub releases.
+    if (Platform.isWindows) return false;
     return appFlavor == "independent" || PlatformDetector.isDesktop();
   }
 }

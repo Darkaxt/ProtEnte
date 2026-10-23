@@ -1,10 +1,10 @@
-app_id: 9E5F0C93-96A3-4DA9-AE52-1AA6339851FC
-package_name: enteauth
-publisher: ente.io
-publisher_url: https://github.com/ente/ente
-display_name: Ente Auth
+app_id: EA53EBAB-98A0-4AB1-9DA6-5B76AC1E972F
+package_name: protente
+publisher: Darkaxt
+publisher_url: https://github.com/Darkaxt/ProtEnte
+display_name: ProtEnte
 create_desktop_icon: false
-install_dir_name: "{autopf}\\Ente Auth"
+install_dir_name: "{localappdata}\\Programs\\ProtEnte"
 setup_icon_file: assets/icons/auth-icon.ico
 script_template: inno_setup.iss
 locales:

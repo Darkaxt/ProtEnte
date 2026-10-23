@@ -1,0 +1,24 @@
+ProtEnte 0.1.0 - Windows packaging baseline
+
+Independent Windows fork of Ente Auth 4.4.26+1118 by Darkaxt.
+Source: https://github.com/Darkaxt/ProtEnte
+Upstream: https://github.com/ente/ente
+License: GNU Affero General Public License version 3 (see LICENSE).
+Upstream copyright and third-party notices remain applicable.
+Not affiliated with or endorsed by Proton or Ente.
+
+This release establishes Windows identity and packaging only. It adds no
+automatic locking, cryptographic lock lifecycle, password-wrapped local keys,
+Windows Hello improvements, clipboard hardening or HTML-export fix.
+It has not received an independent security audit.
+
+The application and installer are unsigned. No Ente signing certificate is used.
+App data is separate from Ente, under the Darkaxt/ProtEnte application namespace.
+Credential Manager uses the distinct protente storage prefix.
+Existing Ente data is not migrated automatically. Import only when intended.
+The Windows upstream updater and Ente Sentry reporting are disabled.
+Updates: https://github.com/Darkaxt/ProtEnte/releases
+
+Ente account synchronization still uses Ente's service and data formats.
+Service-specific links and the application icon are inherited from upstream.
+The 2FAS import format and OTP generation behavior remain upstream.

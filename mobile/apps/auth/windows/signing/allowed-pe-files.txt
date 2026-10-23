@@ -1,5 +1,5 @@
 app_links_plugin.dll
-auth.exe
+protente.exe
 connectivity_plus_plugin.dll
 dartjni.dll
 file_saver_plugin.dll
